@@ -80,11 +80,11 @@ class Doodle {
 
     if (that.jump > 400) {
 		const name = localStorage.getItem("jump_game_username");
+		that.end(score);
 		const userdata = this._getUserData(name).then(doc=>{
 			if(doc.data().score < score){
 				this._saveUserData(name,score);
 			}
-			that.end();
 		});
 	}
 	
@@ -111,21 +111,27 @@ class Doodle {
     that.pointSize.left = that.left;
     that._redraw();
 
+
     requestAnimationFrame(() => {
       that._draw(that);
     });
-
    
-    that.cont.querySelector("#score").innerHTML = "You score: " + score;
+    that.cont.querySelector("#score").innerHTML = "Your score: " + score;
 
-    if (score === that.plates.length - 1) {
-      this._generatePlates(10, score + 10);
-      this.currentPlate = 9;
-      this.offsetY = -this.plates[this.currentPlate].top + 600;
+    if (score === that.plates[0]._score) {
+	//   that._generatePlates(10, score+9,score+9);
+
+	//   const l = this.plates.length - 1;
+	// //   this.currentPlate = l;
+	//   this.pointSize.top = this.plates[l].top - 40;
+	//   this.pointSize.left = this.plates[l].left;
+	// //   this.offsetY = -this.plates[this.currentPlate].top + 600;
+	//   this.currentPlate = 0;
+	//   that.dir = "up";
     }
   }
   // [todo] collect alcohol on platforms to get some bonuses;
-  end() {
+  end(score=0) {
     this._mainTheme.pause();
 	window.cancelAnimationFrame(this.animationFrame);
 
@@ -134,6 +140,9 @@ class Doodle {
 	cont.innerHTML = `<div class="loose_screen">
 					<div>
 						YOU LOSE
+					</div>
+					<div>
+						Your score : ${score}
 					</div>
 					<div>
 						<button class="restart_button button gradient_button_2 primary" id="restart_btn" tabindex=1 autofocus>Restart</button>
@@ -194,6 +203,7 @@ class Doodle {
 									}
 								</ol>
 							</div>
+							<div class="version">ver. 0.0.3</div>
 						</div>
 					</div>`;
 	
@@ -227,7 +237,8 @@ class Doodle {
         collision = true;
         if (this.currentPlate > plate.id) {
           this._score++;
-        }
+		}
+		console.log("check colision");
         this.currentPlate = plate.id;
         return collision;
       }
@@ -239,8 +250,9 @@ class Doodle {
     return Math.floor(from + (to - from + 1) * Math.random());
   }
 
-  _generatePlates(count = 1000, score = 1000) {
-    this.plates = [];
+  _generatePlates(count = 1000, score = 1000,startCount=0) {
+	this.plates = [];
+	let c = startCount;
     for (let i = 0; i < count; i++) {
       this.plates.push({
         id: i,
@@ -258,7 +270,7 @@ class Doodle {
   _redraw() {
     const ctx = this.ctx;
     const ps = this.pointSize;
-
+	console.log("plates",this.plates,this.currentPlate)
     const plt = -this.plates[this.currentPlate].top + 300;
 
     if (!this.offsetY) {
@@ -305,17 +317,12 @@ class Doodle {
   _setHandlers() {
     document.addEventListener("keydown", e => {
       const step = 20;
-      const right = 250;
+	  const right = 290;
+	  const left = -40;
       if (e.key === "ArrowLeft") {
-        this.left = this.left - step <= 0 ? right : this.left - step;
-        // this.p.style.left = `${this.left}px`;
+        this.left = this.left - step <= left ? right : this.left - step;
       } else if (e.key === "ArrowRight") {
-        // for (let i = 0; i < 100; i++) {
-        // 	// const element = array[i];
-        // 	this.left = this.left + 0.05 >= right ? 0 : this.left + 0.05;
-        // }
-        this.left = this.left + step >= right ? 0 : this.left + step;
-        // this.p.style.left = `${this.left}px`;
+        this.left = this.left + step >= right ? left : this.left + step;
       }
 
       if (e.key === "Enter") {

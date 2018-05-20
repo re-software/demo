@@ -132,3 +132,9 @@ body {
         transform:rotate(360deg);
     }
 }
+
+.version{
+	position: relative;
+	font-size: .8rem;
+	text-align: right;
+}
