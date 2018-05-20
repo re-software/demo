@@ -199,7 +199,7 @@ class Doodle {
 	
 		this.cont.querySelector("#start_btn").addEventListener("click", () => {
 			let username = (cont.querySelector("#usernameInput").value)||oldUsername;
-			if(username = "RussmanMom"){
+			if(username === "RussmanMom"){
 				username = oldUsername;
 			}
 			localStorage.setItem("jump_game_username",username);
