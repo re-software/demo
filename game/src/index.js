@@ -239,7 +239,7 @@ class Doodle {
     return Math.floor(from + (to - from + 1) * Math.random());
   }
 
-  _generatePlates(count = 100, score = 100) {
+  _generatePlates(count = 1000, score = 1000) {
     this.plates = [];
     for (let i = 0; i < count; i++) {
       this.plates.push({
